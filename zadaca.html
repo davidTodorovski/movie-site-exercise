@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movies Landing Page</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* Add your custom CSS here */
+      .invalid-feedback {
+        display: none;
+        color: red;
+      }
+
+      .invalid-feedback.show {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Random Quote -->
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-auto">
+          <h2>Random Quote:</h2>
+          <p id="quote">Fetching quote...</p>
+        </div>
+      </div>
+    </div>
+    <!-- Add Movie -->
+    <div class="container mt-3">
+      <div class="row justify-content-center">
+        <div class="col-auto">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#addMovieModal"
+          >
+            Add a Movie
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Genre Filtering -->
+    <div class="container mt-3">
+      <div class="row justify-content-center">
+        <div class="col-auto">
+          <div class="d-flex flex-wrap justify-content-center">
+            <button
+              class="btn btn-outline-primary btn-filter active"
+              data-genre="all"
+            >
+              All
+            </button>
+            <button
+              class="btn btn-outline-primary btn-filter"
+              data-genre="action"
+            >
+              Action
+            </button>
+            <button
+              class="btn btn-outline-primary btn-filter"
+              data-genre="comedy"
+            >
+              Comedy
+            </button>
+            <button
+              class="btn btn-outline-primary btn-filter"
+              data-genre="drama"
+            >
+              Drama
+            </button>
+            <button
+              class="btn btn-outline-primary btn-filter"
+              data-genre="horror"
+            >
+              Horror
+            </button>
+            <button
+              class="btn btn-outline-primary btn-filter"
+              data-genre="science-fiction"
+            >
+              Science Fiction
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mt-5">
+      <h1 class="text-center">Movies</h1>
+      <div class="row mt-4" id="movieContainer"></div>
+    </div>
+
+    <!-- Modal for movie details -->
+    <div
+      class="modal fade"
+      id="movieModal"
+      tabindex="-1"
+      aria-labelledby="movieModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="movieModalLabel">Movie Details</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body" id="movieDetails"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add a Movie Modal -->
+    <div
+      class="modal fade"
+      id="addMovieModal"
+      tabindex="-1"
+      aria-labelledby="addMovieModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addMovieModalLabel">Add Movie</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="addMovieForm">
+              <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="title"
+                  maxlength="250"
+                />
+                <div id="titleFeedback" class="invalid-feedback">
+                  Please enter a title.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="year" class="form-label">Year</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="year"
+                  pattern="\d{4}"
+                  title="Enter a valid year"
+                />
+                <div id="yearFeedback" class="invalid-feedback">
+                  Please enter a valid year between 1900 and the current year.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea
+                  class="form-control"
+                  id="description"
+                  maxlength="500"
+                ></textarea>
+                <div id="descriptionFeedback" class="invalid-feedback">
+                  Please enter a description.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="poster" class="form-label">Poster</label>
+                <input type="text" class="form-control" id="poster" />
+                <div id="posterFeedback" class="invalid-feedback">
+                  Please enter img URL.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="genre" class="form-label">Genre</label>
+                <select class="form-select" id="genre">
+                  <option value="">Select a genre</option>
+                  <option value="action">Action</option>
+                  <option value="comedy">Comedy</option>
+                  <option value="drama">Drama</option>
+                  <option value="horror">Horror</option>
+                  <option value="science-fiction">Science Fiction</option>
+                </select>
+                <div id="genreFeedback" class="invalid-feedback">
+                  Please select a genre.
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">Add Movie</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+    <script>
+      var movies = [
+        {
+          title: "Movie 1",
+          year: "2020",
+          description: "Description of Movie ",
+          genre: "action",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 2",
+          year: "2019",
+          description: "Description of Movie",
+          genre: "comedy",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 3",
+          year: "2018",
+          description: "Description of Movie 3",
+          genre: "drama",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 4",
+          year: "2017",
+          description: "Description of Movie",
+          genre: "horror",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 5",
+          year: "2016",
+          description: "Description of Movie 5",
+          genre: "science-fiction",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 6",
+          year: "2016",
+          description: "Description of Movie ",
+          genre: "science-fiction",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 7",
+          year: "2016",
+          description: "Description of Movie ",
+          genre: "science-fiction",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 8",
+          year: "2016",
+          description: "Description of Movie ",
+          genre: "science-fiction",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 9",
+          year: "2016",
+          description: "Description of Movie ",
+          genre: "science-fiction",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 10",
+          year: "2018",
+          description: "Description of Movie ",
+          genre: "drama",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 11",
+          year: "2018",
+          description: "Description of Movie ",
+          genre: "drama",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 12",
+          year: "2018",
+          description: "Description of Movie ",
+          genre: "drama",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 13",
+          year: "2018",
+          description: "Description of Movie ",
+          genre: "drama",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 14",
+          year: "2020",
+          description: "Description of Movie ",
+          genre: "action",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 15",
+          year: "2020",
+          description: "Description of Movie ",
+          genre: "action",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 16",
+          year: "2020",
+          description: "Description of Movie ",
+          genre: "action",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 17",
+          year: "2020",
+          description: "Description of Movie ",
+          genre: "action",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 18",
+          year: "2017",
+          description: "Description of Movie",
+          genre: "horror",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 19",
+          year: "2017",
+          description: "Description of Movie",
+          genre: "horror",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 20",
+          year: "2017",
+          description: "Description of Movie",
+          genre: "horror",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 21",
+          year: "2017",
+          description: "Description of Movie",
+          genre: "horror",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 22",
+          year: "2019",
+          description: "Description of Movie",
+          genre: "comedy",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 23",
+          year: "2019",
+          description: "Description of Movie",
+          genre: "comedy",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 24",
+          year: "2019",
+          description: "Description of Movie",
+          genre: "comedy",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+        {
+          title: "Movie 25",
+          year: "2019",
+          description: "Description of Movie",
+          genre: "comedy",
+          poster:
+            "https://image.tmdb.org/t/p/w780/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
+        },
+      ];
+
+      // Function to fetch and display a random quote
+      function fetchRandomQuote() {
+        $.ajax({
+          url: "https://quoteapi.pythonanywhere.com/random",
+          method: "GET",
+          success: function (data) {
+            $("#quote").text(data.Quotes[0].quote);
+          },
+          error: function () {
+            $("#quote").text("Failed to fetch quote.");
+          },
+        });
+      }
+
+      // Function to add a movie to the DOM
+      function addMovieToDOM(title, year, description, genre, poster) {
+        var movieElement = `
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src=${poster} class="card-img-top" alt="Movie Poster">
+                <div class="card-body">
+                    <h5 class="card-title">${title}</h5>
+                    <p class="card-text">${description}</p>
+                    <p class="card-year">${year}</p>
+                    <p class="card-genre">${genre}</p>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-primary view-details" data-bs-toggle="modal" data-bs-target="#movieModal">View Details</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+        $("#movieContainer").append(movieElement);
+      }
+
+      function validateTitle(title) {
+        if (title.trim() === "") {
+          return "Please enter a title.";
+        } else if (title.length > 250) {
+          return "Title cannot exceed 250 characters.";
+        }
+        return "";
+      }
+
+      function validatePoster(URL) {
+        if (URL.trim() === "") {
+          return "Please enter URL";
+        }
+        return "";
+      }
+
+      function validateYear(year) {
+        if (year.trim() === "") {
+          return "Please enter a year.";
+        } else if (!/^\d{4}$/.test(year.trim())) {
+          return "Please enter a valid year.";
+        }
+        return "";
+      }
+
+      function validateDescription(description) {
+        if (description.trim() === "") {
+          return "Please enter a description.";
+        } else if (description.length > 500) {
+          return "Description cannot exceed 500 characters.";
+        }
+        return "";
+      }
+
+      function validateFormInputs() {
+        var title = $("#title").val();
+        var year = $("#year").val();
+        var description = $("#description").val();
+        var genre = $("#genre").val();
+        var poster = $("#poster").val();
+
+        var titleError = validateTitle(title);
+        var yearError = validateYear(year);
+        var descriptionError = validateDescription(description);
+        var posterError = validatePoster(poster);
+        var genreError = genre === "" ? "Please select a genre." : "";
+
+        $("#titleFeedback")
+          .text(titleError)
+          .toggleClass("show", titleError !== "");
+        $("#yearFeedback")
+          .text(yearError)
+          .toggleClass("show", yearError !== "");
+        $("#descriptionFeedback")
+          .text(descriptionError)
+          .toggleClass("show", descriptionError !== "");
+        $("#posterFeedback")
+          .text(posterError)
+          .toggleClass("show", posterError !== "");
+        $("#genreFeedback")
+          .text(genreError)
+          .toggleClass("show", genreError !== "");
+
+        return (
+          titleError === "" &&
+          yearError === "" &&
+          descriptionError === "" &&
+          genreError === ""
+        );
+      }
+
+      $(document).ready(function () {
+        fetchRandomQuote();
+
+        $("#addMovieForm").submit(function (e) {
+          e.preventDefault();
+          if (validateFormInputs()) {
+            var title = $("#title").val();
+            var year = $("#year").val();
+            var description = $("#description").val();
+            var genre = $("#genre").val();
+            var poster = $("#poster").val();
+            addMovieToDOM(title, year, description, genre, poster);
+            $("#addMovieModal").modal("hide");
+          }
+        });
+
+        // Loop through movie data and add to DOM
+        movies.forEach(function (movie) {
+          addMovieToDOM(
+            movie.title,
+            movie.year,
+            movie.description,
+            movie.genre,
+            movie.poster
+          );
+        });
+
+        $(document).on("click", ".view-details", function () {
+          var title = $(this).closest(".card").find(".card-title").text();
+          var year = $(this).closest(".card").find(".card-year").text();
+          var description = $(this).closest(".card").find(".card-text").text();
+          var genre = $(this).closest(".card").find(".card-genre").text();
+
+          $("#movieModal #movieDetails").html(`
+                <h5>Title: ${title}</h5>
+                <p>Year: ${year}</p>
+                <p>Description: ${description}</p>
+                <p>Genre: ${genre}</p>
+            `);
+        });
+
+        $(".btn-filter").click(function () {
+          $(".btn-filter").removeClass("active");
+
+          $(this).addClass("active");
+
+          var genre = $(this).data("genre");
+          filterMovies(genre);
+        });
+      });
+
+      function filterMovies(genre) {
+        $("#movieContainer").empty();
+
+        if (genre === "all") {
+          movies.forEach(function (movie) {
+            addMovieToDOM(
+              movie.title,
+              movie.year,
+              movie.description,
+              movie.genre,
+              movie.poster
+            );
+          });
+        } else {
+          var filteredMovies = movies.filter(function (movie) {
+            return movie.genre === genre;
+          });
+          filteredMovies.forEach(function (movie) {
+            addMovieToDOM(
+              movie.title,
+              movie.year,
+              movie.description,
+              movie.genre,
+              movie.poster
+            );
+          });
+        }
+      }
+    </script>
+  </body>
+</html>
